@@ -1,7 +1,7 @@
 /**
  * @fileOverview Tree Map implementation
  */
-var sys = require ('sys'),
+var sys = require ('util'),
     Map = require ('./map').Map;
 
 ///
@@ -18,7 +18,8 @@ var sys = require ('sys'),
  * @param {Function} comparator comparasion function
  */
 var TreeMap = function(comparator) {
-  
+  if(typeof(comparator) === 'undefined' || comparator === null)
+     throw new Error("Invalid compare function");
   var that = this;
 
   /**@field comparator used to maintain order in tree map*/
@@ -208,9 +209,8 @@ var TreeMap = function(comparator) {
   this.getLowerEntry = getLowerEntry;
 
   function put(key, value) {
-    if (!key) {
-      console.log("TreeMap doesn't support null key now.");
-      return;
+     if (key === null || typeof(key) === 'undefined') {
+      throw new Error("TreeMap doesn't support null key now.");
     }
 
     var t = _root;
@@ -266,7 +266,7 @@ var TreeMap = function(comparator) {
     if (null !== replacement) {
       replacement.parent = p.parent;
       if (null === p.parent) {
-        _root = replacment;
+        _root = replacement;
       } else if (p === p.parent.left) {
         p.parent.left = replacement;
       } else {
@@ -384,7 +384,7 @@ var TreeMap = function(comparator) {
           setColor(parentOf(parentOf(x)), COLOR.RED);
           x = parentOf(parentOf(x));
         } else {
-          if (rightOf(parent(x)) === x) {
+          if (rightOf(parentOf(x)) === x) {
             x = parentOf(x);
             rotateLeft(x);
           }
